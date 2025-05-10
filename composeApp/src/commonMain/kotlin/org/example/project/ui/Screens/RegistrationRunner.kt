@@ -202,7 +202,7 @@ class RegRunnerScreen(
 
                                 FieldWithDropdown(
                                     label = "Пол:",
-                                    options = listOf("Мужской", "Остальное"),
+                                    options = listOf("Мужской", "Женский"),
                                     selectedOption = gender,
                                     onOptionSelected = { gender = it },
                                     fontSize = fontSize,
