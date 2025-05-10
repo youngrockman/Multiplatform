@@ -10,3 +10,4 @@ import org.example.project.ui.Screens.MainScreen
 fun App() {
     Navigator(screen = MainScreen())
 }
+

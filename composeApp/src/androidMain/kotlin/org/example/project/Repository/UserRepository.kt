@@ -43,7 +43,7 @@ actual class UserRepository {
         var fonds = listOf(
             Fond(
                 id = 1,
-                name = "Spidvagon",
+                name = "Spidvagon", // кто понял тот понял
                 balance = 1000
             ),
             Fond(
