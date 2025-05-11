@@ -27,7 +27,7 @@ kotlin {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing)
                 implementation("io.ktor:ktor-client-okhttp:2.3.2")
-
+                implementation("com.toedter:jcalendar:1.4")
                 implementation("org.postgresql:postgresql:42.7.1")
 
                 implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")

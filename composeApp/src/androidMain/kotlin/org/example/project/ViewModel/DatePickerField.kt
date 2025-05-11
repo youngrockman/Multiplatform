@@ -1,4 +1,3 @@
-
 package org.example.project.ViewModel
 
 import android.app.DatePickerDialog
@@ -14,10 +13,11 @@ actual fun DatePickerField(
     onDismissRequest: () -> Unit
 ) {
     val context = LocalContext.current
+    val calendar = remember { Calendar.getInstance() }
+
 
     if (trigger) {
-        LaunchedEffect(Unit) {
-            val calendar = Calendar.getInstance()
+        LaunchedEffect(trigger) {
             DatePickerDialog(
                 context,
                 { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->

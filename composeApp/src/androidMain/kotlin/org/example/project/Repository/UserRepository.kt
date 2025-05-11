@@ -7,63 +7,68 @@ import org.example.project.Models.User
 import java.time.LocalDate
 
 actual class UserRepository {
+
     @RequiresApi(Build.VERSION_CODES.O)
     actual fun fetchUsers(): List<User> {
-        var users = listOf(
-            User(
+        return listOf(
+            createUser(
                 id = 1,
                 email = "test@gmail.com",
                 password = "123",
                 name = "gg",
                 surname = "ggwp",
                 gender = "Мужской",
-                photopath = "C:/DOCUMENT/kurumi.jpg",
-                LocalDate.of(2006, 10, 10),
-                country = "Russia",
-                active = false
+                birthDate = LocalDate.of(2006, 10, 10),
+                country = "Russia"
             ),
-            User(
+            createUser(
                 id = 2,
                 email = "test2@gmail.com",
                 password = "1234",
                 name = "lox",
                 surname = "loxich",
                 gender = "Мужской",
-                photopath = "C:/DOCUMENT/kurumi.jpg",
-                LocalDate.of(2007, 10, 10),
-                country = "Russia",
-                active = false
-            ),        )
-        return users
-    }
-    actual fun regUser(user: User): Boolean {
-        return true
-    }
-    actual fun fetchFonds(): List<Fond> {
-        var fonds = listOf(
-            Fond(
-                id = 1,
-                name = "Spidvagon", // кто понял тот понял
-                balance = 1000
-            ),
-            Fond(
-                id = 2,
-                name = "IamAAAA",
-                balance = 2000
-            ),
+                birthDate = LocalDate.of(2007, 10, 10),
+                country = "Russia"
             )
-        return fonds
+        )
     }
-    actual fun withdrawalBalance(idFond: Int, dedSum: Int): Boolean {
-        return true
+
+    actual fun regUser(user: User): Boolean = true
+
+    actual fun fetchFonds(): List<Fond> {
+        return listOf(
+            createFond(id = 1, name = "Spidvagon", balance = 1000), //Кто понял тот понял
+            createFond(id = 2, name = "IamAAAA", balance = 2000)
+        )
     }
-    actual fun getUserIdByEmail(email: String): Int {
-        return 0
-    }
-    actual fun updateUserActive(idUser: Int): Boolean{
-        return true
-    }
-    actual fun topUpBalance(idFond: Int, sum: Int): Boolean{
-        return true
-    }
+
+    actual fun withdrawalBalance(idFond: Int, dedSum: Int): Boolean = true
+
+    actual fun getUserIdByEmail(email: String): Int = 0
+
+    actual fun updateUserActive(idUser: Int): Boolean = true
+
+    actual fun topUpBalance(idFond: Int, sum: Int): Boolean = true
+
+    private fun createUser(id: Int, email: String, password: String, name: String, surname: String, gender: String, birthDate: LocalDate, country: String) =
+        User(
+            id = id,
+            email = email,
+            password = password,
+            name = name,
+            surname = surname,
+            gender = gender,
+            photopath = "C:/DOCUMENT/kurumi.jpg",
+            birthday = birthDate,
+            country = country,
+            active = false,
+        )
+
+    private fun createFond(id: Int, name: String, balance: Int) =
+        Fond(
+            id = id,
+            name = name,
+            balance = balance
+        )
 }

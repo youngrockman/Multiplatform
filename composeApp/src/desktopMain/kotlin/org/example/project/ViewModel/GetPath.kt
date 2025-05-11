@@ -1,29 +1,37 @@
 package org.example.project.ViewModel
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 actual fun GetPath(onPathSelected: (String) -> Unit) {
     LaunchedEffect(Unit) {
-        val selectedPath = withContext(Dispatchers.IO) {
-            val chooser = JFileChooser()
-            chooser.dialogTitle = "Выберите изображение"
-            chooser.fileSelectionMode = JFileChooser.FILES_ONLY
+        withContext(Dispatchers.IO) {
+            JFileChooser().apply {
+                dialogTitle = "Выберите изображение"
+                fileSelectionMode = JFileChooser.FILES_ONLY
 
-            val result = chooser.showOpenDialog(null)
-            if (result == JFileChooser.APPROVE_OPTION) {
-                val file: File = chooser.selectedFile
-                file.absolutePath
-            } else {
-                ""
+
+                val filter = FileNameExtensionFilter(
+                    "Изображения (*.jpg, *.jpeg, *.png, *.gif)",
+                    "jpg", "jpeg", "png", "gif"
+                )
+                addChoosableFileFilter(filter)
+                fileFilter = filter
+
+                val result = showOpenDialog(null)
+                val path = if (result == JFileChooser.APPROVE_OPTION) {
+                    selectedFile?.absolutePath ?: ""
+                } else {
+                    ""
+                }
+
+                onPathSelected(path)
             }
         }
-
-        onPathSelected(selectedPath)
     }
 }

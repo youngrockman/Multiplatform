@@ -1,45 +1,78 @@
 package org.example.project.ViewModel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import org.jetbrains.skia.Image
+import androidx.compose.ui.res.painterResource
 import java.io.File
-import java.nio.file.Files
+import java.io.FileInputStream
+import java.io.IOException
 
 @Composable
 actual fun ImageFromPath(path: String, modifier: Modifier) {
-    val imageBitmap: ImageBitmap? = try {
-        if (path.isBlank()) {
-            val resourceStream = Thread.currentThread().contextClassLoader.getResourceAsStream("drawable/basicPhoto.png")
-            val bytes = resourceStream.readAllBytes()
-            Image.makeFromEncoded(bytes).toComposeImageBitmap()
-        } else {
-            val file = File(path)
-            if (file.exists()) {
-                val bytes = Files.readAllBytes(file.toPath())
-                Image.makeFromEncoded(bytes).toComposeImageBitmap()
-            } else null
-        }
-    } catch (e: Exception) {
-        println("Ошибка загрузки изображения: ${e.message}")
-        null
-    }
+    val imageBitmap = remember(path) { loadImageBitmap(path) }
 
     if (imageBitmap != null) {
         Image(
             painter = BitmapPainter(imageBitmap),
-            contentDescription = null,
+            contentDescription = "Загруженное изображение",
             modifier = modifier,
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            alpha = if (imageBitmap.isValid()) 1f else 0.5f
         )
     } else {
-        Box(modifier = modifier.fillMaxSize())
+        FallbackImage(modifier)
     }
+}
+
+@Composable
+private fun FallbackImage(modifier: Modifier) {
+    Image(
+        painter = painterResource("drawable/basicPhoto.png"),
+        contentDescription = "Изображение по умолчанию",
+        modifier = modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop
+    )
+}
+
+private fun loadImageBitmap(path: String): ImageBitmap? {
+    return when {
+        path.isBlank() -> loadDefaultImage()
+        else -> try {
+            File(path).takeIf { it.exists() }?.let { file ->
+                FileInputStream(file).use { stream ->
+                    org.jetbrains.skia.Image.makeFromEncoded(stream.readAllBytes())
+                        .asImageBitmap()
+                }
+            }
+        } catch (e: IOException) {
+            System.err.println("Ошибка загрузки изображения: ${e.message}")
+            null
+        }
+    }
+}
+
+private fun loadDefaultImage(): ImageBitmap? {
+    return try {
+        Thread.currentThread().contextClassLoader
+            .getResourceAsStream("drawable/basicPhoto.png")
+            ?.use { stream ->
+                org.jetbrains.skia.Image.makeFromEncoded(stream.readAllBytes())
+                    .asImageBitmap()
+            }
+    } catch (e: Exception) {
+        System.err.println("Ошибка загрузки изображения по умолчанию: ${e.message}")
+        null
+    }
+}
+
+private fun ImageBitmap.isValid(): Boolean {
+    return this.width > 0 && this.height > 0
 }

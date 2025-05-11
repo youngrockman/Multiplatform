@@ -8,37 +8,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import org.example.project.R
 import java.io.File
-
 
 @Composable
 actual fun ImageFromPath(path: String, modifier: Modifier) {
     val imageBitmap: ImageBitmap? = when {
         path.isEmpty() -> {
-            ImageBitmap.imageResource(id = R.drawable.basic_photo)
+            null
         }
-
         else -> {
             val file = File(path)
             if (file.exists()) {
-                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                bitmap?.asImageBitmap()
+                try {
+                    val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    bitmap?.asImageBitmap()
+                } catch (e: Exception) {
+                    null
+                }
             } else null
         }
     }
 
     if (imageBitmap != null) {
         Image(
-            painter = BitmapPainter(imageBitmap),
+            bitmap = imageBitmap,
             contentDescription = null,
             modifier = modifier,
             contentScale = ContentScale.Crop
         )
     } else {
-        Box(modifier = modifier.fillMaxSize())
+        Image(
+            painter = painterResource(id = R.drawable.basic_photo),
+            contentDescription = null,
+            modifier = modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
     }
 }

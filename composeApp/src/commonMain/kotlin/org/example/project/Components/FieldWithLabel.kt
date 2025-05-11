@@ -23,16 +23,21 @@ fun FieldWithLabel(
     fontSize: TextUnit,
     labelWidth: Float,
     enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    labelColor: Color = Color.DarkGray,
+    backgroundColor: Color = Color.White,
+    textColor: Color = Color.Black,
+    placeholderColor: Color = Color.LightGray,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Box(modifier = Modifier.weight(labelWidth)) {
             Text(
                 text = label,
-                color = Color.DarkGray,
+                color = labelColor,
                 textAlign = TextAlign.Start,
                 fontSize = fontSize,
                 modifier = Modifier
@@ -47,25 +52,28 @@ fun FieldWithLabel(
                     Text(
                         text = placeholder,
                         fontSize = fontSize,
-                        color = Color.LightGray
+                        color = placeholderColor
                     )
                 }
             },
             textStyle = androidx.compose.ui.text.TextStyle(
                 fontSize = fontSize,
-                color = Color.Black
+                color = textColor
             ),
             enabled = enabled,
             colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = Color.White,
-                cursorColor = Color.Black,
-                textColor = Color.Black,
-                placeholderColor = Color.LightGray,
+                backgroundColor = backgroundColor,
+                cursorColor = textColor,
+                textColor = textColor,
+                placeholderColor = placeholderColor,
                 focusedBorderColor = Color(0xFFCCCCCC),
                 unfocusedBorderColor = Color(0xFFCCCCCC),
                 disabledBorderColor = Color(0xFFCCCCCC)
             ),
-            modifier = Modifier.weight(1f).wrapContentWidth().fillMaxWidth()
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentWidth()
+                .fillMaxWidth()
         )
     }
 }

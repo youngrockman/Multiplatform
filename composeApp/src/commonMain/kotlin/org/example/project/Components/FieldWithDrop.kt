@@ -34,14 +34,16 @@ fun FieldWithDropdown(
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
     fontSize: TextUnit,
-    labelWidth: Float
+    labelWidth: Float,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Box(modifier = Modifier.weight(labelWidth)) {
             Text(
@@ -62,7 +64,7 @@ fun FieldWithDropdown(
                     color = Color(0xFFCCCCCC),
                     shape = RoundedCornerShape(4.dp)
                 )
-                .clickable { expanded = true }
+                .clickable(enabled = enabled) { expanded = true }
                 .padding(12.dp)
         ) {
             Row(
@@ -71,34 +73,39 @@ fun FieldWithDropdown(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = selectedOption.ifEmpty { "..." },
+                    text = selectedOption.ifEmpty { "Выберите..." },
                     fontSize = fontSize,
                     color = if (selectedOption.isEmpty()) Color.LightGray else Color.Black
                 )
 
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown Arrow",
+                    contentDescription = "Открыть список",
                     tint = Color.Gray
                 )
             }
+        }
 
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .background(Color.White)
-                    .fillMaxWidth()
-            ) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onOptionSelected(option)
-                            expanded = false
-                        }
-                    ) {
-                        Text(option, fontSize = fontSize, color = Color.Black)
-                    }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxWidth()
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    },
+                    enabled = enabled
+                ) {
+                    Text(
+                        text = option,
+                        fontSize = fontSize,
+                        color = Color.Black
+                    )
                 }
             }
         }

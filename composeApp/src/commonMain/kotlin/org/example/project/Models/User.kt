@@ -1,7 +1,6 @@
 package org.example.project.Models
 
 import java.time.LocalDate
-import java.util.Date
 
 data class User(
     val id: Int,
